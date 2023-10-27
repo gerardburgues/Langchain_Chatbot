@@ -2,10 +2,15 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+Environ
+example.py
 # C extensions
 *.so
-
+data
+excelsFiles
+docs/*
+json_files
+*.pdf
 # Distribution / packaging
 .Python
 build/
