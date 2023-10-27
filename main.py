@@ -12,6 +12,9 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders.csv_loader import CSVLoader
 from langchain.document_loaders import JSONLoader
 from langchain.document_loaders import WebBaseLoader
+from langchain.prompts import PromptTemplate
+from langchain.memory import ConversationBufferMemory
+from langchain.vectorstores import DocArrayInMemorySearch
 
 from langchain.document_loaders import UnstructuredExcelLoader
 import pandas as pd
@@ -51,29 +54,27 @@ def run_chat(query, chat_history):
 
     # Split the documents into smaller chunks
     # CharacterTextSplitter
-    # text_splitter = CharacterTextSplitter(
-    #     separator="\n", chunk_size=1000, chunk_overlap=100
-    # )
-    # documents = text_splitter.split_documents(documents)
-
-    # Recursive text splitter
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=150)
+    text_splitter = CharacterTextSplitter(
+        separator="\n", chunk_size=1000, chunk_overlap=100
+    )
     documents = text_splitter.split_documents(documents)
 
-    # Convert the document chunks to embedding and save them to the vector store
+    # Recursive text splitter
+    #
     vectordb = Chroma.from_documents(
         documents,
-        embedding=OpenAIEmbeddings(openai_api_key=""),
+        embedding=OpenAIEmbeddings(
+            openai_api_key="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"
+        ),
         persist_directory="./data",
     )
     vectordb.persist()
 
-    # create our Q&A chain
     pdf_qa = ConversationalRetrievalChain.from_llm(
         ChatOpenAI(
-            temperature=0.7,
+            temperature=0.8,
             model_name="gpt-3.5-turbo-16k",
-            openai_api_key="",
+            openai_api_key="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",
         ),
         retriever=vectordb.as_retriever(search_kwargs={"k": 5}),
         return_source_documents=True,
@@ -81,9 +82,6 @@ def run_chat(query, chat_history):
     )
 
     result = pdf_qa({"question": query, "chat_history": chat_history})
-    chat_history.append((query, result["answer"]))
+    chat_history.extend([(query, result["answer"])])
     print(result["answer"], chat_history)
     return result["answer"], chat_history
-
-
-run_chat("What is Quside? ", [])

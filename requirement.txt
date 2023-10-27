@@ -1,0 +1,15 @@
+wheel
+langchain
+docarray
+streamlit
+python-dotenv==0.21.0
+pypdf
+openai
+chromadb
+tiktoken
+docx2txt
+jq
+bs4
+unstructured
+networkx
+openpyxl
