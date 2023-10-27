@@ -1,10 +1,8 @@
-Certainly! Here's a markdown README for your project:
 
----
 
 # Ask Your CSV and Multi-File Chat Interface
 
-This project provides a Streamlit application where you can upload CSV files to ask questions directly. Moreover, the project allows for the upload of multiple files and provides a chat interface for interacting with them.
+This project provides a Streamlit application where you can upload CSV/PDF/DOC files to ask questions directly. Moreover, the project allows for the upload of multiple files and provides a chat interface for interacting with them.
 
 ## Table of Contents
 
