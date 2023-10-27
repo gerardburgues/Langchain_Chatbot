@@ -7,7 +7,10 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationalRetrievalChain
-from langchain.text_splitter import CharacterTextSplitter
+from langchain.text_splitter import (
+    CharacterTextSplitter,
+    RecursiveCharacterTextSplitter,
+)
 from langchain.document_loaders.csv_loader import CSVLoader
 
 from dotenv import load_dotenv
@@ -28,7 +31,9 @@ def run_chat(query, chat_history):
         if file.endswith(".pdf") or file.endswith(".PDF"):
             pdf_path = "./docs/" + file
             loader = PyPDFLoader(pdf_path)
+            print("loader ", pdf_path)
             documents.extend(loader.load())
+            print("DOCSSS--------------------------------> ", documents)
         elif file.endswith(".docx") or file.endswith(".doc"):
             doc_path = "./docs/" + file
             loader = Docx2txtLoader(doc_path)
@@ -53,11 +58,12 @@ def run_chat(query, chat_history):
 
     # Split the documents into smaller chunks
     # CharacterTextSplitter
-    text_splitter = CharacterTextSplitter(
-        separator="\n", chunk_size=1000, chunk_overlap=100
-    )
-    documents = text_splitter.split_documents(documents)
+    # text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+    # documents = text_splitter.split_documents(documents)
 
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
+    documents = text_splitter.split_documents(documents)
+    print("AGAAAAAAAIN", documents)
     # Recursive text splitter
     #
     vectordb = Chroma.from_documents(
