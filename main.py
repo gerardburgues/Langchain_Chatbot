@@ -8,18 +8,17 @@ from langchain.vectorstores import Chroma
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationalRetrievalChain
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders.csv_loader import CSVLoader
-from langchain.document_loaders import JSONLoader
-from langchain.document_loaders import WebBaseLoader
-from langchain.prompts import PromptTemplate
-from langchain.memory import ConversationBufferMemory
-from langchain.vectorstores import DocArrayInMemorySearch
+
+from dotenv import load_dotenv
 
 from langchain.document_loaders import UnstructuredExcelLoader
 import pandas as pd
 
 # Create a List of Documents from all of our files in the ./docs folder
+load_dotenv()
+
+openai_api_key = os.getenv("OPENAI_KEY")
 
 
 def run_chat(query, chat_history):
@@ -63,9 +62,7 @@ def run_chat(query, chat_history):
     #
     vectordb = Chroma.from_documents(
         documents,
-        embedding=OpenAIEmbeddings(
-            openai_api_key="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"
-        ),
+        embedding=OpenAIEmbeddings(openai_api_key=openai_api_key),
         persist_directory="./data",
     )
     vectordb.persist()
@@ -74,7 +71,7 @@ def run_chat(query, chat_history):
         ChatOpenAI(
             temperature=0.8,
             model_name="gpt-3.5-turbo-16k",
-            openai_api_key="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",
+            openai_api_key=openai_api_key,
         ),
         retriever=vectordb.as_retriever(search_kwargs={"k": 5}),
         return_source_documents=True,

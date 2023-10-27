@@ -4,6 +4,15 @@ from dotenv import load_dotenv
 import os
 import streamlit as st
 
+from dotenv import load_dotenv
+
+import pandas as pd
+
+# Create a List of Documents from all of our files in the ./docs folder
+load_dotenv()
+
+openai_api_key = os.getenv("OPENAI_KEY")
+
 
 def main():
     load_dotenv()
@@ -18,7 +27,7 @@ def main():
         agent = create_csv_agent(
             OpenAI(
                 temperature=0,
-                openai_api_key="",
+                openai_api_key=openai_api_key,
             ),
             csv_file,
             verbose=True,
